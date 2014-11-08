@@ -1,3 +1,6 @@
+/* Exercise 1
+ * Author: Chen, Yiqun Gao, Ziheng Yu, Chunyuan
+ */
 #include "lab1.h"
 #include <sys/wait.h>
 

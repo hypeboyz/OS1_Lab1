@@ -1,3 +1,6 @@
+/* Exercise 4
+ * Author: Chen, Yiqun Gao, Ziheng Yu, Chunyuan
+ */
 /* This program assumes the parent writing to the shared memory
  * and the child reading from the shared memory
  * Since the exercise doesn't define how to synchronize, there're

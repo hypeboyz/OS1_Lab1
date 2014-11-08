@@ -1,3 +1,6 @@
+/* Exercise 2
+ * Author: Chen, Yiqun Gao, Ziheng Yu, Chunyuan
+ */
 /* This program assumes the parent writing to the pipe
  * and the child reading from the pipe */
 #include "lab1.h"

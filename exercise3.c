@@ -1,3 +1,6 @@
+/* Exercise 3
+ * Author: Chen, Yiqun Gao, Ziheng Yu, Chunyuan
+ */
 /* This program assumes the parent writing to the message queue
  * and the child reading from the message queue */
 #include "lab1.h"
