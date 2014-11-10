@@ -46,9 +46,9 @@ int main(int argc, char *argv[])
 		err_quit("Usage: ./exercise3 (msg_path)");
 	if (shmname[0] != '/')
 		err_quit("Message queue path name must start with '/'");
-
-	if ((shmid = shm_open(shmname, O_RDWR | O_CREAT, FILE_MODE)) == -1)
-		err_sys("Cannot open message queue");
+	shmid = shm_open(shmname, O_RDWR | O_CREAT, FILE_MODE);
+	if (shmid == -1)
+		err_sys("Cannot open shared memory");
 	if (ftruncate(shmid, MAPSIZ) == -1)
 		err_sys("Cannot truncate the file");
 	if ((shmp = mmap(NULL, MAPSIZ, PROT_READ | PROT_WRITE, MAP_SHARED, shmid,

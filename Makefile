@@ -10,16 +10,16 @@ MAKE=make
 
 all: $(SLIB) exercise1 exercise2 exercise3 exercise4
 
-exercise1: exercise1.c
+exercise1: exercise1.c $(SLIB)
 	$(CC) $(CC_FLAGS) -o $@.o $<
 	$(CC) $@.o $(LD_SLIB) -o $@
-exercise2: exercise2.c
+exercise2: exercise2.c $(SLIB)
 	$(CC) $(CC_FLAGS) -o $@.o $<
 	$(CC) $@.o $(LD_SLIB) -o $@
-exercise3: exercise3.c
+exercise3: exercise3.c $(SLIB)
 	$(CC) $(CC_FLAGS) -o $@.o $<
 	$(CC) $@.o $(LD_SLIB) -o $@ -lrt
-exercise4: exercise4.c
+exercise4: exercise4.c $(SLIB)
 	$(CC) $(CC_FLAGS) -o $@.o $<
 	$(CC) $@.o $(LD_SLIB) -o $@ -lrt -lpthread
 
