@@ -16,7 +16,8 @@ int main(int argc, char *argv[])
 	char *mqname;
 	struct mq_attr mq_attribute;
 
-	if ((mqname = path_alloc(NULL)) == NULL)
+	mqname = path_alloc(NULL);
+	if (mqname == NULL)
 		err_sys("Cannot allocate memory for path name");
 
 	if (argc == 1)
@@ -27,16 +28,16 @@ int main(int argc, char *argv[])
 		err_quit("Usage: ./exercise3 (msg_path)");
 	if (mqname[0] != '/')
 		err_quit("Message queue path name must start with '/'");
-
-	if ((mqid = mq_open(mqname, O_RDWR | O_CREAT, FILE_MODE, NULL)) == -1)
+	mqid = mq_open(mqname, O_RDWR | O_CREAT, FILE_MODE, NULL);
+	if (mqid == -1)
 		err_sys("Cannot open message queue");
 
 	if (mq_getattr(mqid, &mq_attribute) == -1)
 		err_sys("Cannot fetch the attribute information of queue");
 
 	buflen = mq_attribute.mq_msgsize;
-
-	if ((pid = fork()) < 0) {
+	pid = fork();
+	if (pid < 0) {
 		err_sys("Cannot fork new process");
 	} else if (!pid) {
 		printf("This is the child process, pid: %d\n", getpid());
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
 			err_sys("Cannot send message to queue");
 
 		if (waitpid(pid, NULL, 0) < 0)
-			err_sys("Failed to fetch child process termination status");
+			err_sys("Failed to fetch child termination status");
 	}
 
 	mq_close(mqid);

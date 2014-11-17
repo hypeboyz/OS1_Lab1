@@ -35,7 +35,8 @@ int main(int argc, char *argv[])
 	char *semname;
 	char *shmp;
 
-	if ((shmname = path_alloc(NULL)) == NULL)
+	shmname = path_alloc(NULL);
+	if (shmname == NULL)
 		err_sys("Cannot allocate memory for path name");
 
 	if (argc == 1)
@@ -46,13 +47,16 @@ int main(int argc, char *argv[])
 		err_quit("Usage: ./exercise3 (msg_path)");
 	if (shmname[0] != '/')
 		err_quit("Message queue path name must start with '/'");
+
 	shmid = shm_open(shmname, O_RDWR | O_CREAT, FILE_MODE);
 	if (shmid == -1)
 		err_sys("Cannot open shared memory");
 	if (ftruncate(shmid, MAPSIZ) == -1)
 		err_sys("Cannot truncate the file");
-	if ((shmp = mmap(NULL, MAPSIZ, PROT_READ | PROT_WRITE, MAP_SHARED, shmid,
-				0)) == NULL)
+
+	shmp = mmap(NULL, MAPSIZ, PROT_READ | PROT_WRITE, MAP_SHARED,
+			shmid, 0);
+	if (shmp == NULL)
 		err_sys("Cannot map memory to shmobj");
 
 	/* Fetch the allocated size in case for the buffer overrun
@@ -60,10 +64,12 @@ int main(int argc, char *argv[])
 	 * I don't intend to expose the possiblity for users to define
 	 * the path of semaphore as they should not be so interested
 	 * in how the program was synchronized :-) */
-	if ((semname = path_alloc(&buflen)) == NULL)
+	semname = path_alloc(&buflen);
+	if (semname == NULL)
 		err_sys("Cannot allocate memory for semaphore path");
 	strncpy(semname, "/tmpsem", buflen);
-	if ((semobj = sem_open(semname, O_RDWR | O_CREAT, FILE_MODE, 1)) == SEM_FAILED)
+	semobj = sem_open(semname, O_RDWR | O_CREAT, FILE_MODE, 1);
+	if (semobj == SEM_FAILED)
 		err_sys("Cannot get the semaphore object!");
 	if (sem_init(semobj, !0, 1) == -1)
 		err_sys("Cannot initialize semaphore instance");
@@ -71,17 +77,20 @@ int main(int argc, char *argv[])
 	if (sem_wait(semobj) == -1)
 		err_sys("sem_wait() error");
 
-	if ((pid = fork()) < 0) {
+	pid = fork();
+	if (pid < 0) {
 		err_sys("Cannot fork new process");
 	} else if (!pid) {
 		printf("This is the child process, pid: %d\n", getpid());
+
 		/* Well, this sem_open() seems to be redundent since
 		 * the entire memory space was copied by fork(). But
 		 * problems may be caused due to copy on write when I changed
 		 * value of the semaphore. Keeping this sem_open() would have
 		 * spared effort dealing with another shmget(2) and copying
 		 * semaphore instance into that shared memory */
-		if ((semobj = sem_open(semname, O_RDWR)) == SEM_FAILED)
+		semobj = sem_open(semname, O_RDWR);
+		if (semobj == SEM_FAILED)
 			err_sys("Cannot get the semaphore object!");
 		if (sem_wait(semobj) == -1)
 			err_sys("sem_wait() error");
@@ -102,7 +111,7 @@ int main(int argc, char *argv[])
 			err_sys("sem_post() error");
 
 		if (waitpid(pid, NULL, 0) < 0)
-			err_sys("Failed to fetch child process termination status");
+			err_sys("Failed to fetch child termination status");
 		sem_close(semobj);
 	}
 

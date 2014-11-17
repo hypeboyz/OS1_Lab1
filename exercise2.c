@@ -15,8 +15,8 @@ int main(void)
 
 	if (pipe(pfd) == -1)
 		err_sys("Cannot create pipe!");
-
-	if ((pid = fork()) < 0) {
+	pid = fork();
+	if (pid < 0) {
 		err_sys("Cannot fork new process");
 	} else if (!pid) {
 		close(pfd[1]);
@@ -36,7 +36,7 @@ int main(void)
 		printf("This is the parent process, pid: %d\n", getpid());
 
 		if (waitpid(pid, NULL, 0) < 0)
-			err_sys("Failed to fetch child process termination status");
+			err_sys("Failed to fetch child termination status");
 	}
 
 	return 0;
